@@ -1,0 +1,220 @@
+.container {
+  animation: fadeInUp 500ms var(--ease-out) 100ms both;
+}
+
+/* ── Root node ──────────────────────────────────────────────── */
+.rootNode {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 28px;
+  background: linear-gradient(135deg, var(--bg-card), var(--bg-elevated));
+  border: 1px solid var(--bg-border-light);
+  border-radius: var(--radius-xl);
+  margin: 0 auto 0;
+  width: fit-content;
+  box-shadow: var(--shadow-md), 0 0 40px rgba(52, 211, 153, 0.06);
+}
+
+.rootIcon {
+  font-size: 1.6rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+.rootLabel {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.rootConnector {
+  width: 2px;
+  height: 24px;
+  background: var(--bg-border);
+  margin: 0 auto;
+}
+
+/* ── Branches ───────────────────────────────────────────────── */
+.branches {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.branchGroup {
+  animation: fadeInUp 400ms var(--ease-out) both;
+}
+
+.branchNode {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--bg-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.branchNode:hover {
+  border-color: var(--bg-border-light);
+  background: var(--bg-elevated);
+}
+
+.branchNode.completed {
+  border-color: rgba(52, 211, 153, 0.2);
+}
+
+.branchNode.inProgress {
+  border-color: rgba(52, 211, 153, 0.1);
+}
+
+.branchNode.suggested {
+  border-color: rgba(245, 158, 11, 0.25);
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.branchLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  transition: transform var(--transition-med), background var(--transition-fast);
+}
+
+.chevronOpen {
+  transform: rotate(90deg);
+}
+
+.branchLabel {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ── Progress ring ──────────────────────────────────────────── */
+.progressRing {
+  flex-shrink: 0;
+}
+
+.ringText {
+  font-family: var(--font-mono);
+  font-size: 7px;
+  fill: var(--text-muted);
+  font-weight: 600;
+}
+
+/* ── Leaves ──────────────────────────────────────────────────── */
+.leaves {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 400ms var(--ease-out), opacity 300ms var(--ease-out), margin 300ms var(--ease-out);
+  margin-left: 20px;
+  padding-left: 16px;
+  border-left: 2px solid var(--bg-border);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.leavesOpen {
+  max-height: 1000px;
+  opacity: 1;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.leafNode {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  position: relative;
+  transition: all var(--transition-fast);
+  animation: fadeInUp 300ms var(--ease-out) both;
+}
+
+.leafNode:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.leafConnector {
+  position: absolute;
+  left: -17px;
+  width: 16px;
+  height: 2px;
+  background: var(--bg-border);
+}
+
+/* ── Leaf status styles ─────────────────────────────────────── */
+.leafNode.notStarted {
+  color: var(--text-muted);
+}
+
+.leafNode.notStarted svg {
+  color: var(--status-not-started);
+}
+
+.leafNode.suggested {
+  background: var(--status-suggested-dim);
+  border-radius: var(--radius-sm);
+  animation: fadeInUp 300ms var(--ease-out) both, pulseGlow 2s ease-in-out infinite;
+}
+
+.leafNode.suggested svg {
+  color: var(--status-suggested);
+}
+
+.leafNode.completed svg {
+  color: var(--status-completed);
+}
+
+.leafLabel {
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.leafNode.notStarted .leafLabel {
+  color: var(--text-secondary);
+}
+
+.leafNode.completed .leafLabel {
+  color: var(--status-completed);
+}
+
+.leafNode.suggested .leafLabel {
+  color: var(--status-suggested);
+  font-weight: 600;
+}
+
+.doneTag {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: var(--status-completed-dim);
+  color: var(--status-completed);
+}

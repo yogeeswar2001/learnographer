@@ -1,180 +1,148 @@
 .shell {
   position: relative;
+  width: 100%;
   height: 100vh;
-  width: 100vw;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   overflow: hidden;
   background: var(--bg-base);
 }
 
-/* ambient blobs */
-.blob1 {
+/* ── Background ─────────────────────────────────────────────── */
+.bgOrb1 {
   position: absolute;
-  top: -160px;
-  left: -160px;
-  width: 560px;
-  height: 560px;
+  top: -200px;
+  left: -100px;
+  width: 500px;
+  height: 500px;
   border-radius: 50%;
-  background: radial-gradient(circle, #f5c84218 0%, transparent 70%);
-  filter: blur(60px);
-  pointer-events: none;
-  animation: blobFloat 14s ease-in-out infinite alternate;
-}
-.blob2 {
-  position: absolute;
-  bottom: -120px;
-  right: -120px;
-  width: 460px;
-  height: 460px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #5a4af215 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
   filter: blur(80px);
   pointer-events: none;
-  animation: blobFloat 18s ease-in-out infinite alternate-reverse;
 }
 
-@keyframes blobFloat {
-  0%   { transform: translate(0,0) scale(1); }
-  100% { transform: translate(40px, 30px) scale(1.08); }
-}
-
-/* ── Three-panel stage ─────────────────────────────────── */
-.stage {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  width: min(1440px, 98vw);
-  height: min(88vh, 840px);
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  border: 1px solid var(--bg-border);
-  box-shadow: var(--shadow-card), 0 0 0 1px rgba(255,255,255,.03) inset;
-  animation: stageIn 500ms cubic-bezier(.22,1,.36,1) both;
-}
-
-@keyframes stageIn {
-  from { opacity: 0; transform: translateY(14px) scale(.985); }
-  to   { opacity: 1; transform: translateY(0)    scale(1); }
-}
-
-/* ── Middle: chat panel ────────────────────────────────── */
-.chatPanel {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  background: var(--bg-surface);
-  min-width: 0;
-  position: relative;
-}
-
-.chatWindowShell {
-  position: relative;
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ── History loading overlay ─────────────────────────────── */
-.historyOverlay {
+.bgOrb2 {
   position: absolute;
-  inset: 0;
+  bottom: -150px;
+  right: -80px;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.06) 0%, transparent 70%);
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+.header {
+  position: relative;
   z-index: 10;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: var(--bg-surface);
-}
-.historySpinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid var(--bg-border);
-  border-top-color: var(--accent-gold);
-  border-radius: 50%;
-  animation: historySpin .8s linear infinite;
-}
-@keyframes historySpin {
-  to { transform: rotate(360deg); }
+  justify-content: space-between;
+  padding: 14px 24px;
+  background: rgba(14, 16, 23, 0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--bg-border);
+  flex-shrink: 0;
+  animation: fadeIn 400ms var(--ease-out) both;
 }
 
-/* ── Right: code panel ────────────────────────────────────── */
-.codePanel {
-  flex: 0 0 38%;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  min-height: 0;
-  overflow: visible;
-}
-
-@media (max-width: 1100px) {
-  .codePanel {
-    flex: 0 0 36%;
-  }
-}
-
-@media (max-width: 900px) {
-  .codePanel {
-    display: none;
-  }
-}
-
-/* ── Header (inside chat panel) ───────────────────────────── */
-.header {
+.headerLeft {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
-  padding: 18px 28px;
-  border-bottom: 1px solid var(--bg-border);
-  background: rgba(255,255,255,.015);
-  flex-shrink: 0;
-  flex-wrap: wrap;
 }
-.headerLeft {
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+  border: 1px solid var(--bg-border);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.backBtn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.headerTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.headerIcon {
+  font-size: 1.2rem;
+}
+
+.headerLabel {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.headerRight {
   display: flex;
   align-items: center;
   gap: 12px;
 }
-.logo {
-  font-size: 1.8rem;
-  color: var(--accent-gold);
-  line-height: 1;
-  filter: drop-shadow(0 0 8px var(--accent-gold-glow));
-  flex-shrink: 0;
-}
-.title {
-  font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: .06em;
-  color: var(--text-primary);
-  text-transform: uppercase;
-}
-.subtitle {
-  font-size: .65rem;
-  color: var(--text-muted);
-  letter-spacing: .04em;
-  margin-top: 2px;
+
+.topicPill {
+  padding: 6px 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  background: var(--bg-elevated);
+  border: 1px solid var(--bg-border);
+  color: var(--text-secondary);
 }
 
-/* ── Skills loading indicator ────────────────────────────── */
-.skillsLoading {
-  font-size: .7rem;
-  font-family: var(--font-mono);
-  color: #4ade80;
-  letter-spacing: .03em;
-  animation: skillsFadeIn 300ms ease-out both, skillsFadeOut 600ms ease-in 1400ms both;
+/* ── Main content ───────────────────────────────────────────── */
+.main {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 1;
 }
 
-@keyframes skillsFadeIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to   { opacity: 1; transform: translateY(0); }
+.contentArea {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 28px 24px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-@keyframes skillsFadeOut {
-  from { opacity: 1; }
-  to   { opacity: 0; }
+.urlInputArea {
+  animation: fadeInUp 500ms var(--ease-out) 150ms both;
+}
+
+.treeArea {
+  animation: fadeInUp 500ms var(--ease-out) 250ms both;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .contentArea {
+    padding: 20px 16px 48px;
+  }
+
+  .header {
+    padding: 12px 16px;
+  }
 }

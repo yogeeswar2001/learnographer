@@ -1,102 +1,80 @@
-# Claude Agent Starter (Python)
+# 🧠 Learnograph — AI Learning Roadmap
 
-A full-stack EdgeOne Makers Agent template — streaming chat backed by the Claude Agent SDK (Python), with EdgeOne sandbox tools wired in via MCP and conversation memory persisted through `context.agent.store`.
+**Type any topic → Get an AI-generated learning roadmap → Track your mastery as you read.**
 
-**Framework:** Claude Agent SDK · **Category:** Quick Start <!-- TODO: confirm --> · **Language:** Python
+Learnograph is a web app that generates personalized learning mind-maps. As you read articles around the web, paste in the URL — the AI figures out which topics you've covered and tracks your progress automatically.
 
-[![Deploy to EdgeOne Makers](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://edgeone.ai/makers/new?template=claude-agent-starter-python&from=within&fromAgent=1&agentLang=python)
+[![Deploy to EdgeOne Makers](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://edgeone.ai/makers/new?template=learnographer)
 
-<!-- ![preview](./assets/preview.png)  TODO: confirm -->
+## ✨ Features
 
-## Overview
+- **AI-Generated Learning Trees** — Enter any topic and get a structured curriculum with 4-8 main subtopics, each with 2-4 focused leaf topics
+- **Smart URL Analysis** — Paste any article URL; the AI reads it and identifies which learning topics it covers
+- **One-Click Confirmation** — Review AI suggestions with justifications, then confirm or dismiss with a single click
+- **Visual Progress Tracking** — Overall progress bar + per-branch progress rings show your mastery at a glance
+- **Beautiful Dark UI** — Modern design with smooth animations, glassmorphism, and an emerald/teal accent palette
 
-A minimal, production-shaped Python starter that wires the Claude Agent SDK into EdgeOne Makers. Demonstrates the full chat loop — SSE streaming, sandbox tool calls, conversation persistence — so you can fork it and start replacing prompts and tools instead of plumbing.
+## 🚀 Core Loop
 
-- **SSE streaming chat** — token-by-token `text_delta` events, plus `tool_called` events whenever the model invokes a tool.
-- **Sandbox tools via MCP** — `commands`, `files`, `code_interpreter`, `browser` are wrapped as `SdkMcpTool`s and registered through `create_sdk_mcp_server`, then handed to Claude via `mcp_servers`.
-- **Sticky conversation memory** — Claude transcript stored in `context.store.claude_session_store()`; user/assistant messages mirrored via `store.append_message()` for replayable history.
-- **Dual cancellation** — frontend `AbortController` plus backend `context.utils.abort_active_run()` so `/stop` actually interrupts the LLM call.
-- **Two-folder backend** — long-running stateful work in `agents/`, short stateless CRUD in `cloud-functions/`.
+1. **Enter a topic** — "What do you want to learn?" (e.g., "Kubernetes", "Machine Learning")
+2. **Explore the roadmap** — Interactive expandable tree with all subtopics you need to master
+3. **Read articles** — Go learn! Read docs, tutorials, blog posts
+4. **Paste URLs** — Come back and paste the URL of what you just read
+5. **AI suggests completions** — The AI identifies which tree nodes the article covers
+6. **Confirm & progress** — One click to mark topics complete; watch your progress bar fill up
 
-## Environment Variables
+## 🛠 Tech Stack
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `AI_GATEWAY_API_KEY` | Yes | Model gateway API key. Use your Makers Models API Key, or any OpenAI-compatible provider key. |
-| `AI_GATEWAY_BASE_URL` | Yes | Gateway base URL. For Makers Models, use `https://ai-gateway.edgeone.link/v1`. |
-| `AI_GATEWAY_MODEL` | No | Model ID. Defaults to `@makers/deepseek-v4-flash` (a free built-in model). |
-| `WSA_API_KEY` | No | Tencent Cloud Web Search API key. Required only if you use the web-search tool. |
+- **Frontend**: React 18 + TypeScript + Vite
+- **Backend**: EdgeOne Makers cloud functions (Python)
+- **AI**: Anthropic-compatible API via EdgeOne AI Gateway
+- **Deployment**: Tencent EdgeOne Pages
 
-This template follows the OpenAI-compatible standard — point these at Makers Models or any compatible provider.
+## 📦 Project Structure
 
-### How to get `AI_GATEWAY_API_KEY`
+```
+learnographer/
+├── src/                           # React + TypeScript frontend
+│   ├── App.tsx                   # Main app orchestrator
+│   ├── api.ts                    # API client (generateTree, analyzeUrl)
+│   ├── types.ts                  # TypeScript types
+│   └── components/               # UI components
+│       ├── LandingScreen.tsx     # Topic input hero screen
+│       ├── TreeView.tsx          # Interactive tree visualization
+│       ├── ProgressBar.tsx       # Overall mastery progress
+│       ├── UrlInput.tsx          # "Paste a link" input
+│       ├── SuggestionCard.tsx    # AI suggestion confirm/dismiss
+│       └── SourcesList.tsx       # Read articles history
+├── cloud-functions/               # Python serverless functions
+│   ├── generate-tree/index.py   # POST /generate-tree
+│   └── analyze-url/index.py     # POST /analyze-url
+├── edgeone.json                   # EdgeOne deployment config
+├── DEPLOY.md                      # Deployment instructions
+└── package.json
+```
 
-1. Open the [Makers Console](https://edgeone.ai/makers/new?s_url=https://console.tencentcloud.com/edgeone/makers).
-2. Sign in and enable Makers.
-3. Go to **Makers → Models → API Key** and create a key.
-4. Copy it into `AI_GATEWAY_API_KEY`.
+## ⚙️ Environment Variables
 
-The built-in `@makers/deepseek-v4-flash` model is free with a usage cap and is suitable for prototyping. For production, bind your own paid provider (BYOK).
+| Variable              | Required | Description                                    |
+|-----------------------|----------|------------------------------------------------|
+| `AI_GATEWAY_API_KEY`  | Yes      | EdgeOne Makers AI Gateway API key              |
+| `AI_GATEWAY_BASE_URL` | Yes      | `https://ai-gateway.edgeone.link/v1`           |
+| `AI_GATEWAY_MODEL`    | No       | Defaults to `@makers/deepseek-v4-flash` (free) |
 
-### How to get `WSA_API_KEY`
+Alternatively, set `ANTHROPIC_API_KEY` to use the Anthropic API directly.
 
-`WSA_API_KEY` is only needed when calling the web-search tool. See the [documentation](https://pages.edgeone.ai/document/sandbox-network-search-tool).
-
-### Provider fallbacks
-
-`agents/_model.py` also reads `ANTHROPIC_API_KEY` / `ANTHROPIC_BASE_URL` / `ANTHROPIC_CUSTOM_HEADERS` directly — useful if you want to call the Anthropic API instead of going through a gateway. If both sets are present, the gateway variables take precedence. Set `AI_GATEWAY_SMALL_MODEL` (or `ANTHROPIC_SMALL_FAST_MODEL`) to override the small model the SDK uses for internal sub-calls.
-
-## Local Development
-
-Prerequisites: Node.js ≥ 18, Python ≥ 3.10, and the EdgeOne CLI (`npm i -g edgeone`).
+## 🧑‍💻 Local Development
 
 ```bash
 npm install
-pip install -r agents/requirements.txt
-cp .env.example .env       # then fill in AI_GATEWAY_API_KEY / AI_GATEWAY_BASE_URL
-edgeone makers dev
+cp .env.example .env       # Fill in AI_GATEWAY_API_KEY + AI_GATEWAY_BASE_URL
+edgeone makers dev          # Starts both frontend + cloud functions
 ```
 
-Local agent metrics & traces are exposed at `http://localhost:8080/agent-metrics`.
+## 🌐 Deployment
 
-## Project Structure
+See [DEPLOY.md](./DEPLOY.md) for step-by-step EdgeOne deployment instructions.
 
-```text
-claude-agent-starter-python/
-├── agents/                          # Stateful EdgeOne Makers Agent Functions (Python)
-│   ├── chat/index.py               # POST /chat — SSE streaming chat
-│   ├── stop/index.py               # POST /stop — abort active agent run
-│   ├── _model.py                   # Model & gateway env config (private)
-│   ├── _logger.py                  # Logger utility (private)
-│   ├── config.json                 # Route config
-│   └── requirements.txt            # Python agent dependencies
-├── cloud-functions/                 # Stateless EdgeOne Makers Python cloud functions
-│   ├── history/index.py            # POST /history — load conversation messages
-│   ├── conversations/index.py      # POST /conversations — list a user's conversations
-│   ├── clear-history/index.py      # POST /clear-history — clear messages of one conversation
-│   ├── delete-conversation/index.py # POST /delete-conversation — delete a conversation entirely
-│   ├── _logger.py                  # Logger utility
-│   ├── _redact.py                  # Sensitive-field redactor for logs
-│   └── requirements.txt            # Python cloud-function dependencies
-├── src/                             # React + Vite + TypeScript frontend
-│   ├── App.tsx                     # Conversation ID + SSE stream orchestration
-│   ├── api.ts                      # /chat, /stop, /history, ... wrappers and SSE parser
-│   └── components/                 # ChatWindow, ChatInput, CodeViewer, ToolIndicators, ...
-├── package.json                     # Frontend dependencies
-├── edgeone.json                     # EdgeOne deployment config
-├── .env.example                     # Environment variables template
-├── vite.config.ts
-└── tsconfig.json
-```
+## 📜 License
 
-> Files prefixed with `_` are private modules — not exposed as public routes.
-
-## Resources
-
-- [EdgeOne Makers Agents — Documentation](https://pages.edgeone.ai/document/agents)
-- [EdgeOne Makers — Quick Start](https://pages.edgeone.ai/document/agents-quick-start)
-- [Makers Models](https://pages.edgeone.ai/document/models)
-
-## License
-
-MIT.
+MIT
